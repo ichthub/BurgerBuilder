@@ -2,6 +2,8 @@ import React , {Component} from 'react';
 import Auxi from '../../hoc/Auxi';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControles/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 
 const INGR_PR = { //glabal var
 	salad : 2,
@@ -19,7 +21,8 @@ class BurgerBuilder extends Component{
 			meat: 0
 		},
 		totalPrice : 10,
-		purchaseable: false
+		purchaseable: false,
+		purchasing : false
 	}
 	
 	updatedPurchaseState (ingredients) {
@@ -62,6 +65,14 @@ class BurgerBuilder extends Component{
 		this.updatedPurchaseState(updatedIngredients);
 	}
 	
+	purchasingHandler = () => {
+		this.setState({purchasing : true});
+	}
+	
+	purchaseCancelHandler = () => {
+		this.setState({purchasing : false});
+	}
+	
 	render(){
 		const disabledInfo = {
 			...this.state.ingredients
@@ -72,12 +83,16 @@ class BurgerBuilder extends Component{
 		
 		return(
 			<Auxi>
+				<Modal show = {this.state.purchasing} modelClosed = {this.purchaseCancelHandler}>
+					<OrderSummary ingredients ={ this.state.ingredients}/>
+				</Modal>
 				<Burger ingredients = {this.state.ingredients}/>
 				<BuildControls 
 					ingredientAdded = { this.addIngredientHandler}
 					ingredientRemoved = { this.removeIngredientHandler}
 					disabled = {disabledInfo}
 					purchaseable = {this.state.purchaseable}
+					ordered = {this.purchasingHandler}
 					price = {this.state.totalPrice}
 				/>
 				
