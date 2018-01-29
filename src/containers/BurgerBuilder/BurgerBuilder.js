@@ -1,5 +1,5 @@
 import React , {Component} from 'react';
-import Auxi from '../../hoc/Auxi';
+import Auxi from '../../hoc/Auxi/Auxi';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControles/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
@@ -96,7 +96,9 @@ class BurgerBuilder extends Component{
 						price = {this.state.totalPrice}
 					/>
 				</Modal>
+			
 				<Burger ingredients = {this.state.ingredients}/>
+			
 				<BuildControls 
 					ingredientAdded = { this.addIngredientHandler}
 					ingredientRemoved = { this.removeIngredientHandler}
