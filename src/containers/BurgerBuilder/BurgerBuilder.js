@@ -4,6 +4,11 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControles/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import axios from '../../axios_orders';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withError from '../../hoc/ErrorHandler/withError';
+import Offline from '../../components/Burger/Offline/Offline';
+
 
 const INGR_PR = { //glabal var
 	salad : 2,
@@ -14,15 +19,23 @@ const INGR_PR = { //glabal var
 
 class BurgerBuilder extends Component{
 	state = {
-		ingredients: {
-			salad : 0,
-			bacon : 0,
-			cheese: 0,
-			meat: 0
-		},
+		ingredients: null,
 		totalPrice : 10,
 		purchaseable: false,
-		purchasing : false
+		purchasing : false,
+		loading: false,
+		error : false
+	}
+	//request data from firebase
+	componentDidMount(){
+		axios.get('https://burger-builder-7b394.firebaseio.com/ingredients.json')
+		.then(res =>{
+			this.setState({ingredients: res.data});
+		})
+		.catch(err => {
+			this.setState({error : true});
+			return err
+		});
 	}
 	
 	updatedPurchaseState (ingredients) {
@@ -74,7 +87,33 @@ class BurgerBuilder extends Component{
 	}
 	
 	purchaseContinueHandler = () => {
-		alert ('You Continue!');
+		//alert ('You Continue!');
+		this.setState({loading: true});
+		const order = {
+			ingredients : this.state.ingredients,
+			price: this.state.totalPrice,
+			customer:{
+				name: 'Hassan Houmaid',
+				addresse: {
+					street: 'taghdirt center',
+					zipCode: '1234',
+					country: 'Morocco'
+				},
+				email: 'test@test.com'
+		},
+			deliveryMethod : 'fastest'
+		}
+		
+		axios.post('/orders.json', order)
+			.then(response => {
+			//if request is done we want to stop loading and close model
+				this.setState({loading: false, purchasing: false});
+			})
+			.catch(error => {
+			//if request is done we want to stop loading and close model
+				this.setState({loading: false, purchasing: false});
+			});
+		
 	}
 	
 	
@@ -86,32 +125,48 @@ class BurgerBuilder extends Component{
 			disabledInfo[key] = disabledInfo[key] <=0
 		}
 		
+		//because we fetch data from server we want to show our burger when the request is done or we will get error
+		let orderSummary = null;
+		let burger = this.state.error ? <Offline/> : <Spinner />;
+		if(this.state.ingredients){
+			burger = (
+				<Auxi> 
+					<Burger ingredients = {this.state.ingredients}/>
+
+					<BuildControls 
+						ingredientAdded = { this.addIngredientHandler}
+						ingredientRemoved = { this.removeIngredientHandler}
+						disabled = {disabledInfo}
+						purchaseable = {this.state.purchaseable}
+						ordered = {this.purchasingHandler}
+						price = {this.state.totalPrice}
+					/>
+				</Auxi>
+		
+			);
+		
+			orderSummary = (
+				<OrderSummary 
+					ingredients ={this.state.ingredients}
+					purchaseCancelled = {this.purchaseCancelHandler}
+					purchaseContinued = {this.purchaseContinueHandler}
+					price = {this.state.totalPrice}/>
+			);
+		}
+		if(this.state.loading){
+			orderSummary = <Spinner />;
+		}
+		
 		return(
 			<Auxi>
 				<Modal show = {this.state.purchasing} modelClosed = {this.purchaseCancelHandler}>
-					<OrderSummary 
-						ingredients ={this.state.ingredients}
-						purchaseCancelled = {this.purchaseCancelHandler}
-						purchaseContinued = {this.purchaseContinueHandler}
-						price = {this.state.totalPrice}
-					/>
+					{orderSummary}
 				</Modal>
-			
-				<Burger ingredients = {this.state.ingredients}/>
-			
-				<BuildControls 
-					ingredientAdded = { this.addIngredientHandler}
-					ingredientRemoved = { this.removeIngredientHandler}
-					disabled = {disabledInfo}
-					purchaseable = {this.state.purchaseable}
-					ordered = {this.purchasingHandler}
-					price = {this.state.totalPrice}
-				/>
-				
+				{burger}
 			</Auxi>
 		
 		);
 	}
 }
 
-export default BurgerBuilder;
+export default withError(BurgerBuilder, axios);

@@ -1,0 +1,38 @@
+.Offline{
+	background-color: white;
+	margin: auto;
+	padding: 8px;
+	height: 500px;
+	width: 500px;
+	box-sizing: border-box;
+	align-items: center
+}
+.Offline img{
+	height: 350px;
+	width: 350px;
+	
+}
+
+@media(min-width : 500px) and (min-height: 400px){
+	.Offline {
+		width: 350px;
+		height: 300px;
+	}
+	
+}
+
+@media(min-width : 500px) and (min-height: 401px){
+	.Offline  {
+		width: 450px;
+		height: 400px;
+	}
+	
+}
+
+@media(min-width : 1000px) and (min-height: 700px){
+	.Offline  {
+		width: 700px;
+		height: 600px;
+	}
+	
+}
