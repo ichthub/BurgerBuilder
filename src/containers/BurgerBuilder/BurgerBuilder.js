@@ -19,6 +19,7 @@ const INGR_PR = { //glabal var
 
 class BurgerBuilder extends Component{
 	state = {
+		
 		ingredients: null,
 		totalPrice : 10,
 		purchaseable: false,
@@ -111,6 +112,7 @@ class BurgerBuilder extends Component{
 			})
 			.catch(error => {
 			//if request is done we want to stop loading and close model
+				
 				this.setState({loading: false, purchasing: false});
 			});
 		
