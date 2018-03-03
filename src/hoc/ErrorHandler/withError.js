@@ -2,7 +2,7 @@ import React,{Component}  from 'react';
 
 import Modal from '../../components/UI/Modal/Modal';
 import Auxi from '../Auxi/Auxi';
-const withError = (WrappedComonent, axios) => {
+const withError = (WrappedComponent, axios) => {
 	return class extends Component{
 	state = {
 		error: null
@@ -17,7 +17,7 @@ const withError = (WrappedComonent, axios) => {
 			});
 		}
 		//destroy needless interceptors
-		
+
 		componentWillUnmount () {
 			axios.interceptors.request.eject(this.reqInterceptors);
 			axios.interceptors.request.eject(this.resInterceptors);
@@ -32,13 +32,13 @@ const withError = (WrappedComonent, axios) => {
 				<Modal show ={this.state.error} modelClosed ={this.errorConfirmedHandler}>
 					{this.state.error ? this.state.error.message : null}
 				</Modal>
-				<WrappedComonent {...this.props}/>
+				<WrappedComponent {...this.props}/>
 			{/*any wrapped components and its props*/}
 			</Auxi>
-		
+
 		);
 	}
-		
+
 	}
 
 }
