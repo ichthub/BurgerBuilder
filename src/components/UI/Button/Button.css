@@ -20,7 +20,7 @@
 
 .Success {
     color: #5C9210;
-    cursor: not-allowed;
+    --cursor: not-allowed;
 }
 
 .Danger {
