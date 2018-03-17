@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
@@ -46,6 +47,7 @@ class ContactData extends Component {
                   required: true,
                   minLength: 5,
                   maxLenght: 5,
+                  isNumeric: true
                 },
                 valid: false,
                 touched: false,
@@ -72,6 +74,7 @@ class ContactData extends Component {
                 value: '',
                 validation:{
                   required: true,
+                  isEmail: true
                 },
                 valid: false,
                 touched: false,
@@ -101,7 +104,7 @@ class ContactData extends Component {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
         const order = {
-            ingredients: this.props.ingredients,
+            ingredients: this.props.ings,
             price: this.props.price,
             orderData: formData
         }
@@ -129,6 +132,15 @@ class ContactData extends Component {
       if(rules.maxLenght){
         isValid = value.length <= rules.maxLenght && isValid;
         console.log("B",value.length)
+      }
+      if (rules.isEmail) {
+            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            isValid = pattern.test(value) && isValid
+        }
+
+      if (rules.isNumeric) {
+          const pattern = /^\d+$/;
+          isValid = pattern.test(value) && isValid
       }
       return isValid;
     }
@@ -190,4 +202,12 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData;
+const mapStateToProps = (state) => {//state
+  return{
+		ings: state.ingredients,
+    price: state.totalPrice
+	}
+};
+
+
+export default connect(mapStateToProps)(ContactData);
