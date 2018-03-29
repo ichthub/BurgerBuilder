@@ -1,7 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios_orders';
 
-
 export const purchaseBurgerSuccess = (id, orderData) => {
 	return {
 		type: actionTypes.PURCHASE_BURGER_SUCCESS,
@@ -10,29 +9,36 @@ export const purchaseBurgerSuccess = (id, orderData) => {
 	};
 };
 
-export const purchaseBurgerFail = (error) => {
+export const purchaseBurgerFail = error => {
 	return {
-    type: actionTypes.PURCHASE_BURGER_FAIL,
-		error:error
-  };
+		type: actionTypes.PURCHASE_BURGER_FAIL,
+		error: error
+	};
 };
 
-export const purchaseBurgerStart = () =>{
+export const purchaseBurgerStart = () => {
 	return {
-		type: actionTypes.PURCHASE_BURGER_START,
+		type: actionTypes.PURCHASE_BURGER_START
 	};
-}
+};
 
-export const purchaseBurger = (orderData) =>{
+export const purchaseBurger = orderData => {
 	return dispatch => {
 		dispatch(purchaseBurgerStart());
-		axios.post( '/orders.json', orderData )
-				.then( response => {
-					console.log(response.data);
-					dispatch(purchaseBurgerSuccess(response.data, orderData));
-				})
-				.catch( error => {
-					dispatch(purchaseBurgerFail(error));
-				});
+		axios
+			.post('/orders.json', orderData)
+			.then(response => {
+				console.log(response.data);
+				dispatch(purchaseBurgerSuccess(response.data.name, orderData));
+			})
+			.catch(error => {
+				dispatch(purchaseBurgerFail(error));
+			});
 	};
-}
+};
+
+export const purchaseInit = () => {
+	return {
+		type: actionTypes.PURCHASE_INIT
+	};
+};

@@ -10,7 +10,7 @@ import axios from '../../axios_orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withError from '../../hoc/ErrorHandler/withError';
 import Offline from '../../components/Burger/Offline/Offline';
-import * as burgerBuilderActions from '../../Store/actions/index';
+import * as actions from '../../Store/actions/index';
 
 class BurgerBuilder extends Component {
 	state = {
@@ -42,7 +42,9 @@ class BurgerBuilder extends Component {
 	};
 
 	purchaseContinueHandler = () => {
+		this.props.onInitPurchase();
 		this.props.history.push('/checkout');
+		console.log('	purchaseContinueHandler');
 	};
 
 	render() {
@@ -98,18 +100,18 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
 	//state
 	return {
-		ings: state.ingredients,
-		price: state.totalPrice,
-		error: state.error
+		ings: state.burgerBuilder.ingredients,
+		price: state.burgerBuilder.totalPrice,
+		error: state.burgerBuilder.error
 	};
 };
 const mapDispatchToProps = dispatch => {
 	//dispatch
 	return {
-		onIngAdd: ingName => dispatch(burgerBuilderActions.addIngredient(ingName)),
-		onIngRemove: ingName =>
-			dispatch(burgerBuilderActions.removeIngredient(ingName)),
-		onInitIngredient: () => dispatch(burgerBuilderActions.initIngredients())
+		onIngAdd: ingName => dispatch(actions.addIngredient(ingName)),
+		onIngRemove: ingName => dispatch(actions.removeIngredient(ingName)),
+		onInitIngredient: () => dispatch(actions.initIngredients()),
+		onInitPurchase: () => dispatch(actions.purchaseInit())
 	};
 };
 
