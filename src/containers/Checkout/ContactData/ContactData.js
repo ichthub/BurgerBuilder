@@ -124,11 +124,11 @@ class ContactData extends Component {
 		}
 		if (rules.minLenght) {
 			isValid = value.length >= rules.minLenght && isValid;
-			console.log('A', value.length);
+			//console.log('A', value.length);
 		}
 		if (rules.maxLenght) {
 			isValid = value.length <= rules.maxLenght && isValid;
-			console.log('B', value.length);
+			//console.log('B', value.length);
 		}
 		if (rules.isEmail) {
 			const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
