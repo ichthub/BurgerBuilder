@@ -1,45 +1,44 @@
-import React ,{ Component } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Order from '../../components/Order/Order';
 import axios from '../../axios_orders';
 import withError from '../../hoc/ErrorHandler/withError';
+import * as actions from '../../Store/actions/index';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Orders extends Component {
-  state = {
-    orders : [],
-    loading : true,
-  }
-  componentDidMount() {
-    const fetchedOrders = [];
-    axios.get('orders.json')
-          .then(res =>{
-            for (var key in res.data) {
-              fetchedOrders.push({
-                ...res.data[key],
-                id: key
-              });
-              //console.log(res.data[key]);
-            }
-            this.setState({loading : false, orders: fetchedOrders});
-            //console.log(fetchedOrders);
+	componentDidMount() {
+		this.props.onOrderFetch();
+	}
 
-          })
-          .catch(err =>{
-            this.setState({loading : false});
-          });
-  }
-
-  render() {
-    return (
-          <div>
-            {this.state.orders.map(order =>(
-              <Order
-                key={ order.id}
-                ingredients={order.ingredients}
-                price = {order.price}/>
-            ))}
-          </div>
-    );
-  }
+	render() {
+		let orderComp = <Spinner />;
+		if (!this.props.loading) {
+			orderComp = this.props.orders.map(order => (
+				<Order
+					key={order.id}
+					ingredients={order.ingredients}
+					price={order.price}
+				/>
+			));
+		}
+		return <div>{orderComp}</div>;
+	}
 }
-export default withError(Orders, axios);
+
+const mapStateToProps = state => {
+	return {
+		orders: state.order.orders,
+		loading: state.order.loading
+	};
+};
+const mapDispatchToProps = dispatch => {
+	return {
+		onOrderFetch: () => dispatch(actions.fetchOrders())
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+	withError(Orders, axios)
+);
