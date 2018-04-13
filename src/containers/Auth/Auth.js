@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import Spinner from '../../components/UI/Spinner/Spinner';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.css';
@@ -32,7 +33,7 @@ class Auth extends Component {
 				value: '',
 				validation: {
 					required: true,
-					minLength: 7
+					minLenght: 6
 				},
 				valid: false,
 				touched: false
@@ -51,19 +52,11 @@ class Auth extends Component {
 		}
 		if (rules.minLenght) {
 			isValid = value.length >= rules.minLenght && isValid;
-			//console.log('A', value.length);
-		}
-		// if (rules.maxLenght) {
-		// 	isValid = value.length <= rules.maxLenght && isValid;
-		// 	//console.log('B', value.length);
-		// }
-		if (rules.isEmail) {
-			const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			isValid = pattern.test(value) && isValid;
+			console.log('A', value.length);
 		}
 
-		if (rules.isNumeric) {
-			const pattern = /^\d+$/;
+		if (rules.isEmail) {
+			const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 			isValid = pattern.test(value) && isValid;
 		}
 		return isValid;
@@ -109,7 +102,7 @@ class Auth extends Component {
 			});
 		}
 
-		const form = formElementsArray.map(formElement => (
+		let form = formElementsArray.map(formElement => (
 			<Input
 				key={formElement.id}
 				elementType={formElement.config.elementType}
@@ -121,12 +114,23 @@ class Auth extends Component {
 				changed={event => this.inputChangedHandler(event, formElement.id)}
 			/>
 		));
+
+		if (this.props.loading) {
+			form = <Spinner />;
+		}
+		let errorMsg = null;
+
+		if (this.props.error) {
+			errorMsg = <p>{this.props.error.message}</p>;
+		}
+
 		return (
 			<div className={classes.Auth}>
+				{errorMsg}
 				<form onSubmit={this.submitHandler}>
 					{form}
 					<Button btnType="Success">Submit</Button>
-					<Button btnType="Danger" clicked={this.switchAuthModeHandler}>
+					<Button clicked={this.switchAuthModeHandler} btnType="Danger">
 						Switch To {this.state.isSignUp ? 'SIGNIN' : 'SIGNUP'}
 					</Button>
 				</form>
@@ -134,7 +138,12 @@ class Auth extends Component {
 		);
 	}
 }
-
+const mapStateToProps = state => {
+	return {
+		loading: state.auth.loading,
+		error: state.auth.error
+	};
+};
 const mapDispatchToProps = dispatch => {
 	return {
 		onAuth: (email, password, isSignUp) =>
@@ -142,4 +151,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
