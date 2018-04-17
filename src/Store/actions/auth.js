@@ -1,17 +1,18 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
+//action creators
 export const authStart = () => {
 	return {
 		type: actionTypes.AUTH_START
 	};
 };
 
-export const authSuccess = (token, userID) => {
+export const authSuccess = (token, userId) => {
 	return {
 		type: actionTypes.AUTH_SUCCESS,
-		idtoken: token,
-		userId: userID
+		idToken: token,
+		userId: userId
 	};
 };
 
@@ -37,12 +38,6 @@ export const checkTimeout = expirationTime => {
 	};
 };
 export const auth = (email, password, isSignUp) => {
-	let url =
-		'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
-	if (!isSignUp) {
-		url =
-			'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
-	}
 	return dispatch => {
 		dispatch(authStart());
 		const authData = {
@@ -50,6 +45,12 @@ export const auth = (email, password, isSignUp) => {
 			password: password,
 			returnSecureToken: true
 		};
+
+		let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
+		if (!isSignUp) {
+			url =	'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
+		}
+
 		axios
 			.post(url, authData)
 			.then(res => {
