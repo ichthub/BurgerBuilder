@@ -46,9 +46,11 @@ export const auth = (email, password, isSignUp) => {
 			returnSecureToken: true
 		};
 
-		let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
+		let url =
+			'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
 		if (!isSignUp) {
-			url =	'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
+			url =
+				'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyA2lYXo-69PTYBXnH9NCBTgKaRgRJ1zxyo';
 		}
 
 		axios
@@ -62,5 +64,12 @@ export const auth = (email, password, isSignUp) => {
 				console.log(err.response.data.error);
 				dispatch(authFail(err.response.data.error));
 			});
+	};
+};
+
+export const setAuthRedirectPath = path => {
+	return {
+		type: actionTypes.SET_AUTH_REDIRECT_PATH,
+		path: path
 	};
 };
