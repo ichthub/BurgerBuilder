@@ -11,9 +11,6 @@ class Modal extends Component {
 		);
 	}
 
-	componentWillUpdate() {
-		//console.log('Model will update');
-	}
 	render() {
 		return (
 			<Auxi>

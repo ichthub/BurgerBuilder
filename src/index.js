@@ -12,7 +12,11 @@ import burgerBuilderReducer from './Store/reducers/burgerBuilderReducer';
 import orderReducer from './Store/reducers/orderReducer';
 import authReducer from './Store/reducers/authReducer';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+//aonlu see redux debugin when in dev mode
+const composeEnhancers =
+	process.env.NODE_ENV === 'development'
+		? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+		: null || compose;
 
 const rootReducer = combineReducers({
 	burgerBuilder: burgerBuilderReducer,

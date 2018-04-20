@@ -8,6 +8,7 @@ import axios from '../../../axios_orders';
 import Input from '../../../components/UI/Input/Input';
 import withError from '../../../hoc/ErrorHandler/withError';
 import * as actions from '../../../Store/actions/index';
+import { updateObj, checkValidity } from '../../../shared/utility';
 
 class ContactData extends Component {
 	state = {
@@ -20,7 +21,7 @@ class ContactData extends Component {
 				},
 				value: '',
 				validation: {
-					required: false
+					required: true
 				},
 				valid: false,
 				touched: false
@@ -114,53 +115,22 @@ class ContactData extends Component {
 		this.props.onOrderBurger(order, this.props.token);
 	};
 
-	checkValidity(value, rules) {
-		let isValid = true;
-		if (!rules) {
-			return true;
-		} //just another lyer of security to validation object
-
-		if (rules.required) {
-			isValid = value.trim() !== '' && isValid;
-		}
-		if (rules.minLenght) {
-			isValid = value.length >= rules.minLenght && isValid;
-			//console.log('A', value.length);
-		}
-		if (rules.maxLenght) {
-			isValid = value.length <= rules.maxLenght && isValid;
-			//console.log('B', value.length);
-		}
-		if (rules.isEmail) {
-			const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			isValid = pattern.test(value) && isValid;
-		}
-
-		if (rules.isNumeric) {
-			const pattern = /^\d+$/;
-			isValid = pattern.test(value) && isValid;
-		}
-		return isValid;
-	}
-
 	inputChangedHandler = (event, inputIdentifier) => {
 		// inputIdentifier = object keys
-		const updatedOrderForm = {
-			//copy orderForm object to updatedOrderForm
-			...this.state.orderForm
-		};
-		const updatedFormElement = {
-			//deep copy of object
-			...updatedOrderForm[inputIdentifier]
-		};
-		updatedFormElement.value = event.target.value;
-		updatedFormElement.valid = this.checkValidity(
-			updatedFormElement.value,
-			updatedFormElement.validation
+		const updatedFormElement = updateObj(
+			this.state.orderForm[inputIdentifier],
+			{
+				value: event.target.value,
+				valid: checkValidity(
+					event.target.value,
+					this.state.orderForm[inputIdentifier].validation
+				),
+				touched: true
+			}
 		);
-		//console.log(updatedFormElement);
-		updatedFormElement.touched = true;
-		updatedOrderForm[inputIdentifier] = updatedFormElement;
+		const updatedOrderForm = updateObj(this.state.orderForm, {
+			[inputIdentifier]: updatedFormElement
+		});
 
 		let formValidCheker = true;
 		for (let inputIdentifier in updatedOrderForm) {
