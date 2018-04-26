@@ -11,6 +11,7 @@ import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 //import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './Store/actions/index';
+import { rmdirSync } from 'fs';
 
 //code splitting
 
@@ -74,3 +75,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+rmc
