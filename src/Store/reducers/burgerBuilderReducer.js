@@ -3,7 +3,7 @@ import { updateObj } from '../../shared/utility';
 
 const intialState = {
 	ingredients: null,
-	totalPrice: 10,
+	totalPrice: 0,
 	error: false,
 	building: false
 };
@@ -47,7 +47,7 @@ const removeIngredient = (state, action) => {
 	);
 	const updateSt = {
 		ingredients: updatedIngs,
-		totalPrice: state.totalPrice + INGR_PR[action.ingredientName],
+		totalPrice: state.totalPrice - INGR_PR[action.ingredientName],
 		building: true
 	};
 	return updateObj(state, updateSt);

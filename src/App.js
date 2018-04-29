@@ -4,17 +4,12 @@ import { connect } from 'react-redux';
 import Loadable from 'react-loadable';
 
 import Spinner from '../src/components/UI/Spinner/Spinner';
-//import Orders from './containers/Orders/Orders';
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
-//import Checkout from './containers/Checkout/Checkout';
-//import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './Store/actions/index';
-import { rmdirSync } from 'fs';
 
 //code splitting
-
 const checkout = Loadable({
 	loader: () => import('./containers/Checkout/Checkout'),
 	loading:() =>  <Spinner />
@@ -75,4 +70,3 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
-rmc
